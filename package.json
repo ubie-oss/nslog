@@ -1,0 +1,13 @@
+{
+  "name": "@ubie/nslog",
+  "version": "1.0.0",
+  "description": "A structured logger for NestJS",
+  "dependencies": {
+    "@nestjs/common": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.27",
+    "typescript": "^5.4.2",
+    "vitest": "^1.3.1"
+  }
+}
