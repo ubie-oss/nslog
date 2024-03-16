@@ -37,10 +37,10 @@ const logLevels: Record<LogLevel, number> = {
   fatal: 5,
 };
 
-export interface StructuredLoggerOptions {
+export type StructuredLoggerOptions = {
   logLevel: LogLevel;
   format: LogFormat;
-}
+};
 
 function isPlainObject(obj: unknown): obj is Record<string, unknown> {
   return obj != null && Object.getPrototypeOf(obj) === Object.prototype;
