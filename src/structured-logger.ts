@@ -40,106 +40,112 @@ export class StructuredLogger implements LoggerService {
     this.format = options.format;
   }
 
-  verbose(message: unknown, ...optionalParams: unknown[]) {
+  verbose(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("verbose")) {
       return;
     }
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
+    const { message, params, context } = this.extractMessages([
+      messages,
       ...optionalParams,
     ]);
-    this.printMessages(messages, context, "verbose");
+    this.printMessage({ message, params, context, severity: "verbose" });
   }
 
-  debug(message: unknown, ...optionalParams: unknown[]) {
+  debug(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("debug")) {
       return;
     }
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
+    const { message, params, context } = this.extractMessages([
+      messages,
       ...optionalParams,
     ]);
-    this.printMessages(messages, context, "debug");
+    this.printMessage({ message, params, context, severity: "debug" });
   }
 
-  log(message: unknown, ...optionalParams: unknown[]) {
+  log(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("log")) {
       return;
     }
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
+    const { message, params, context } = this.extractMessages([
+      messages,
       ...optionalParams,
     ]);
-    this.printMessages(messages, context, "info");
+    this.printMessage({ message, params, context, severity: "info" });
   }
 
-  error(message: unknown, ...optionalParams: unknown[]) {
+  error(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("error")) {
       return;
     }
-    const { messages, context, stack } =
-      this.getContextAndStackAndMessagesToPrint([message, ...optionalParams]);
-    this.printMessages(messages, context, "error", stack);
+    const { message, params, context, stack } = this.extractMessagesWithStack([
+      messages,
+      ...optionalParams,
+    ]);
+    this.printMessage({ message, params, stack, context, severity: "error" });
   }
 
-  warn(message: unknown, ...optionalParams: unknown[]) {
+  warn(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("warn")) {
       return;
     }
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
+    const { message, params, context } = this.extractMessages([
+      messages,
       ...optionalParams,
     ]);
-    this.printMessages(messages, context, "warn");
+    this.printMessage({ message, params, context, severity: "warn" });
   }
 
-  fatal(message: unknown, ...optionalParams: unknown[]) {
+  fatal(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("fatal")) {
       return;
     }
-    const { messages, context } = this.getContextAndMessagesToPrint([
-      message,
+    const { message, params, context } = this.extractMessages([
+      messages,
       ...optionalParams,
     ]);
-    this.printMessages(messages, context, "fatal");
+    this.printMessage({ message, params, context, severity: "fatal" });
   }
 
   protected isLevelEnabled(level: LogLevel): boolean {
     return logLevels[level] >= logLevels[this.logLevel];
   }
 
-  protected print(str: string) {
-    process.stdout.write(str + "\n");
-  }
-
-  protected printMessages(
-    messages: unknown[],
-    context: string | null,
-    severity: Severity,
-    stack?: string | null
-  ): void {
+  protected printMessage({
+    message,
+    params,
+    context,
+    severity,
+    stack,
+  }: {
+    message: string;
+    params: unknown[];
+    context: string | null;
+    severity: Severity;
+    stack?: string | null;
+  }): void {
     switch (this.format) {
       case "json":
-        this.printJson({ messages, context, severity, stack });
+        this.printJson({ message, params, context, severity, stack });
         break;
       case "text":
-        this.printText({ messages, context, severity, stack });
+        this.printText({ message, params, context, severity, stack });
         break;
     }
   }
 
   protected printJson({
-    messages,
+    message,
+    params,
     context,
     severity,
     stack,
   }: {
-    messages: unknown[];
+    message: string;
+    params: unknown[];
     context: string | null;
     severity: Severity;
     stack?: string | null;
   }) {
-    const [message, ...args] = messages;
     const output: {
       severity: string;
       time: string;
@@ -147,11 +153,11 @@ export class StructuredLogger implements LoggerService {
       requestId?: string;
       stack_trace?: string;
       context?: string;
-      info?: unknown[];
+      params?: unknown[];
     } & Record<string, unknown> = {
       severity: severity.toUpperCase(),
       time: new Date().toISOString(),
-      message: `${message}`,
+      message: message,
     };
     if (stack) {
       output.stack_trace = stack;
@@ -160,14 +166,14 @@ export class StructuredLogger implements LoggerService {
       output.context = context;
     }
 
-    for (const arg of args) {
-      if (isPlainObject(arg)) {
-        for (const [k, v] of Object.entries(arg)) {
+    for (const param of params) {
+      if (isPlainObject(param)) {
+        for (const [k, v] of Object.entries(param)) {
           output[k] = v;
         }
-      } else if (arg) {
-        if (!output.info) output.info = [];
-        output.info.push(arg);
+      } else if (param) {
+        if (!output.info) output.params = [];
+        output.params?.push(param);
       }
     }
 
@@ -175,43 +181,49 @@ export class StructuredLogger implements LoggerService {
   }
 
   protected printText({
-    messages,
+    message,
+    params,
     context,
     severity,
     stack,
   }: {
-    messages: unknown[];
+    message: string;
+    params: unknown[];
     context: string | null;
     severity: Severity;
     stack?: string | null;
   }) {
-    const contextMessage = this.formatContext(context);
-    const level = this.colorize(
-      severity.toUpperCase(),
-      this.getColorNameByLogLevel(severity)
-    );
-    const [message, ...args] = messages;
     const output: string[] = [
-      `${level} `,
-      contextMessage,
+      // level
+      this.colorize(
+        severity.toUpperCase(),
+        this.getColorNameByLogLevel(severity)
+      ),
+      // context
+      context ? this.colorize(`[${context}]`, "yellow") : "",
+      // message
       severity === "error"
-        ? this.colorize(`${message}`, this.getColorNameByLogLevel(severity))
-        : `${message}`,
+        ? this.colorize(message, this.getColorNameByLogLevel(severity))
+        : message,
     ];
 
-    for (const arg of args) {
-      if (isPlainObject(arg)) {
-        output.push(` ${this.formatObject(arg)}`);
-      } else if (arg) {
-        output.push(` ${this.colorize(`${arg}`, "bold")}`);
+    for (const param of params) {
+      if (isPlainObject(param)) {
+        output.push(`${this.formatObject(param)}`);
+      } else if (param) {
+        output.push(`${this.colorize(`${param}`, "bold")}`);
       }
     }
 
-    this.print(output.join(""));
+    this.print(output.filter((t) => t).join(" "));
 
     if (severity === "error" && stack) {
       this.print(stack);
     }
+  }
+
+  protected print(str: string) {
+    process.stdout.write(str + "\n");
   }
 
   protected formatObject(obj: Record<string, unknown>, parentKey = ""): string {
@@ -232,31 +244,39 @@ export class StructuredLogger implements LoggerService {
     return values.join(" ");
   }
 
-  protected formatContext(context: string | null): string {
-    return context ? this.colorize(`[${context}] `, "yellow") : "";
-  }
-
-  protected getContextAndMessagesToPrint(args: unknown[]): {
-    messages: unknown[];
+  protected extractMessages(messages: unknown[]): {
+    message: string;
+    params: unknown[];
     context: string | null;
   } {
-    if (args.length <= 1) {
-      return { messages: args, context: null };
+    let message = "";
+    let params: unknown[] = [];
+    if (typeof messages[0] === "string") {
+      message = messages[0];
+      params = messages.slice(1);
+    } else {
+      params = messages;
     }
 
-    const last = args[args.length - 1];
+    if (params.length === 0) {
+      return { message, params, context: null };
+    }
+
+    const last = params[params.length - 1];
     if (typeof last === "string") {
       return {
+        message,
+        params: params.slice(0, params.length - 1),
         context: last,
-        messages: args.slice(0, args.length - 1),
       };
     } else {
-      return { messages: args, context: null };
+      return { message, params, context: null };
     }
   }
 
-  protected getContextAndStackAndMessagesToPrint(args: unknown[]): {
-    messages: unknown[];
+  protected extractMessagesWithStack(args: unknown[]): {
+    message: string;
+    params: unknown[];
     context: string | null;
     stack?: string | null;
   } {
@@ -264,31 +284,63 @@ export class StructuredLogger implements LoggerService {
     if (args.length === 2) {
       const last = args[1];
       if (this.isStackFormat(last)) {
-        return { messages: [args[0]], context: null, stack: last };
+        if (typeof args[0] === "string") {
+          return {
+            message: args[0],
+            params: [],
+            context: null,
+            stack: last,
+          };
+        } else {
+          return {
+            message: "",
+            params: [args[0]],
+            context: null,
+            stack: last,
+          };
+        }
       } else {
-        return this.getContextAndMessagesToPrint(args);
+        return this.extractMessages(args);
       }
     }
 
     // error(message: unknown, stack?: string, context?: string)
     if (args.length === 3) {
-      const last = args[2];
-      const second = args[1];
+      const [first, second, last] = args;
       if (!this.isStackFormat(second)) {
-        return this.getContextAndMessagesToPrint(args);
+        return this.extractMessages(args);
+      }
+
+      let message = "";
+      let params: unknown[] = [];
+      if (typeof first === "string") {
+        message = first;
+        params = [];
+      } else {
+        params = [first];
       }
 
       if (typeof last === "string") {
-        return { messages: [args[0]], context: last, stack: second };
+        return {
+          message,
+          params,
+          context: last,
+          stack: second,
+        };
       } else if (last === undefined) {
-        return { messages: [args[0]], context: null, stack: second };
+        return {
+          message,
+          params,
+          context: null,
+          stack: second,
+        };
       } else {
-        return this.getContextAndMessagesToPrint(args);
+        return this.extractMessages(args);
       }
     }
 
     // other
-    return this.getContextAndMessagesToPrint(args);
+    return this.extractMessages(args);
   }
 
   protected isStackFormat(stack: unknown): stack is string {
