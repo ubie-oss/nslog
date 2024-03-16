@@ -48,8 +48,8 @@ function isPlainObject(obj: unknown): obj is Record<string, unknown> {
 
 @Injectable()
 export class StructuredLogger implements LoggerService {
-  private logLevel: LogLevel;
-  private format: LogFormat;
+  protected logLevel: LogLevel;
+  protected format: LogFormat;
 
   constructor(options: StructuredLoggerOptions) {
     this.logLevel = options.logLevel;
