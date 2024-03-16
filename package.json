@@ -2,6 +2,9 @@
   "name": "@ubie/nslog",
   "version": "1.0.0",
   "description": "A structured logger for NestJS",
+  "scripts": {
+    "test": "vitest run"
+  },
   "dependencies": {
     "@nestjs/common": "*"
   },
