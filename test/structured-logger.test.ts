@@ -22,7 +22,13 @@ describe("StructuredLogger", () => {
     });
 
     test("output as json", () => {
-      logger.log("hello", { foo: "bar", x: { y: "z" } }, "extra params", "ctx");
+      logger.log(
+        "hello",
+        { foo: "bar", x: { y: "z" } },
+        "extra params",
+        [1, 2, 3],
+        "ctx"
+      );
 
       expect(getResult()).toEqual({
         severity: "INFO",
@@ -30,7 +36,7 @@ describe("StructuredLogger", () => {
         context: "ctx",
         foo: "bar",
         x: { y: "z" },
-        params: ["extra params"],
+        params: ["extra params", [1, 2, 3]],
         time: expect.stringMatching(isoDateRegex),
       });
     });
@@ -87,9 +93,15 @@ describe("StructuredLogger", () => {
     });
 
     test("output as text", () => {
-      logger.log("hello", { foo: "bar", x: { y: "z" } }, "extra params", "ctx");
+      logger.log(
+        "hello",
+        { foo: "bar", x: { y: "z" } },
+        "extra params",
+        [1, 2, 3],
+        "ctx"
+      );
       expect(getResult()).toEqual(
-        "INFO [ctx] hello foo=bar x.y=z extra params"
+        "INFO [ctx] hello foo=bar x.y=z extra params 1,2,3"
       );
     });
 

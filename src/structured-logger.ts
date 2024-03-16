@@ -173,7 +173,7 @@ export class StructuredLogger implements LoggerService {
     } & Record<string, unknown> = {
       severity: severity.toUpperCase(),
       time: new Date().toISOString(),
-      message: message,
+      message,
     };
     if (stack) {
       output.stack_trace = stack;
@@ -188,7 +188,7 @@ export class StructuredLogger implements LoggerService {
           output[k] = v;
         }
       } else if (param) {
-        if (!output.info) output.params = [];
+        if (!output.params) output.params = [];
         output.params?.push(param);
       }
     }
