@@ -1,0 +1,1 @@
+../../src/structured-logger.ts
