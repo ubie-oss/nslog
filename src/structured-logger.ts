@@ -1,4 +1,4 @@
-import { LogLevel, LoggerService } from "@nestjs/common";
+import { LoggerService, Injectable } from "@nestjs/common";
 
 type ColorName =
   | "bold"
@@ -10,19 +10,34 @@ type ColorName =
   | "cyan"
   | "gray"
   | "plain";
-type LogFormat = "text" | "json";
-type Severity = "verbose" | "debug" | "info" | "error" | "warn" | "fatal";
+export type LogLevel =
+  | "verbose"
+  | "debug"
+  | "info"
+  | "log"
+  | "error"
+  | "warn"
+  | "fatal";
+export type Severity =
+  | "verbose"
+  | "debug"
+  | "info"
+  | "error"
+  | "warn"
+  | "fatal";
+export type LogFormat = "text" | "json";
 
 const logLevels: Record<LogLevel, number> = {
   verbose: 0,
   debug: 1,
   log: 2,
+  info: 2, // info is an alias of log
   warn: 3,
   error: 4,
   fatal: 5,
 };
 
-interface StructuredLoggerOptions {
+export interface StructuredLoggerOptions {
   logLevel: LogLevel;
   format: LogFormat;
 }
@@ -31,6 +46,7 @@ function isPlainObject(obj: unknown): obj is Record<string, unknown> {
   return obj != null && Object.getPrototypeOf(obj) === Object.prototype;
 }
 
+@Injectable()
 export class StructuredLogger implements LoggerService {
   private logLevel: LogLevel;
   private format: LogFormat;
@@ -352,6 +368,8 @@ export class StructuredLogger implements LoggerService {
   }
 
   protected colorize(text: string, colorName: ColorName) {
+    if (!text) return "";
+
     switch (colorName) {
       case "bold":
         return `\x1B[1m${text}\x1B[0m`;
