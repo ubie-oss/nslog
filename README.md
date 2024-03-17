@@ -1,6 +1,6 @@
 # nslog
 
-nslog is a structured logger for NestJS. In production, you can output logs in JSON format, making it compatible with services like GCP's [Cloud Logging](https://cloud.google.com/logging/docs/structured-logging). In local development, you can output logs in a color-coded format in the terminal for easy viewing.
+nslog is a structured logger for NestJS. In production, you can output logs in JSON format, making it compatible with services like [Cloud Logging](https://cloud.google.com/logging/docs/structured-logging). In local development, you can output logs in a color-coded format in the terminal for easy viewing.
 
 ## Example
 
@@ -49,7 +49,7 @@ see also: https://docs.nestjs.com/techniques/logger
 
 ### Additional common parameter
 
-If you have common parameters that you want to output in all logs, you can override the `printMessages`.
+If you have common parameters that you want to output in all logs, you can override the `printMessage`.
 
 ```typescript
 import { Injectable } from "@nestjs/common";
