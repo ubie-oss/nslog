@@ -6,11 +6,11 @@ nslog is a structured logger for NestJS. In production, you can output logs in J
 
 ### JSON format
 
-![json](./assets/json.png)
+![json](https://github.com/ubie-oss/nslog/raw/main/assets/json.png)
 
 ### Text format
 
-![text](./assets/text.png)
+![text](https://github.com/ubie-oss/nslog/raw/main/assets/text.png)
 
 ## Installation
 
