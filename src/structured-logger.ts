@@ -10,6 +10,7 @@ type ColorName =
   | "cyan"
   | "gray"
   | "plain";
+
 export type LogLevel =
   | "verbose"
   | "debug"
@@ -18,6 +19,7 @@ export type LogLevel =
   | "error"
   | "warn"
   | "fatal";
+
 export type Severity =
   | "verbose"
   | "debug"
@@ -26,6 +28,14 @@ export type Severity =
   | "warn"
   | "fatal";
 export type LogFormat = "text" | "json";
+
+export type PrintMessageArgs = {
+  message: string;
+  params: unknown[];
+  context: string | null;
+  severity: Severity;
+  stack?: string | null;
+};
 
 const logLevels: Record<LogLevel, number> = {
   verbose: 0,
@@ -126,25 +136,13 @@ export class StructuredLogger implements LoggerService {
     return logLevels[level] >= logLevels[this.logLevel];
   }
 
-  protected printMessage({
-    message,
-    params,
-    context,
-    severity,
-    stack,
-  }: {
-    message: string;
-    params: unknown[];
-    context: string | null;
-    severity: Severity;
-    stack?: string | null;
-  }): void {
+  protected printMessage(args: PrintMessageArgs): void {
     switch (this.format) {
       case "json":
-        this.printJson({ message, params, context, severity, stack });
+        this.printJson(args);
         break;
       case "text":
-        this.printText({ message, params, context, severity, stack });
+        this.printText(args);
         break;
     }
   }
@@ -155,13 +153,7 @@ export class StructuredLogger implements LoggerService {
     context,
     severity,
     stack,
-  }: {
-    message: string;
-    params: unknown[];
-    context: string | null;
-    severity: Severity;
-    stack?: string | null;
-  }) {
+  }: PrintMessageArgs) {
     const output: {
       severity: string;
       time: string;
@@ -202,13 +194,7 @@ export class StructuredLogger implements LoggerService {
     context,
     severity,
     stack,
-  }: {
-    message: string;
-    params: unknown[];
-    context: string | null;
-    severity: Severity;
-    stack?: string | null;
-  }) {
+  }: PrintMessageArgs) {
     const output: string[] = [
       // level
       this.colorize(
