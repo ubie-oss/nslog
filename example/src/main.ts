@@ -8,7 +8,7 @@ export class AppModule {}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
-  app.useLogger(new StructuredLogger({ logLevel: "verbose", format: "json" }));
+  app.useLogger(new StructuredLogger({ logLevel: "verbose", format: "text" }));
 
   const logger = new Logger("bootstrap");
   logger.log("Hello structured log!", { foo: "bar" });

@@ -1,21 +1,17 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
+    "target": "ES2021",
     "moduleResolution": "node",
     "declaration": true,
-    "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
     "sourceMap": true,
-    "baseUrl": "./",
-    "incremental": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false,
-    "outDir": "./dist",
+    "outDir": "./dist/esm",
     "types": ["vitest/globals"]
-  }
+  },
+  "include": ["src"]
 }

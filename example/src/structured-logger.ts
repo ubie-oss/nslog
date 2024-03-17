@@ -1,1 +1,1 @@
-../../src/structured-logger.ts
+../../src/index.ts
