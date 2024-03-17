@@ -58,8 +58,8 @@ import { PrintMessageArgs, StructuredLogger, StructuredLoggerOptions } from "./s
 @Injectable()
 class MyLogger extends StructuredLogger {
   protected printMessage(args: PrintMessageArgs): void {
-    args.params.push({ requestId: getRequestId() })
-    super.printMessage(args)
+    args.params.push({ requestId: getRequestId() });
+    super.printMessage(args);
   }
 }
 ```
