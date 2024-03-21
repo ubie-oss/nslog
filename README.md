@@ -33,14 +33,14 @@ async function bootstrap() {
 ```
 
 ```typescript
-import { Logger, Injectable } from '@nestjs/common';
+import { Logger, Injectable } from "@nestjs/common";
 
 @Injectable()
 class MyService {
   private readonly logger = new Logger(MyService.name);
 
   doSomething() {
-    this.logger.log('Doing something...');
+    this.logger.log("Doing something...");
   }
 }
 ```
@@ -53,7 +53,11 @@ If you have common parameters that you want to output in all logs, you can overr
 
 ```typescript
 import { Injectable } from "@nestjs/common";
-import { PrintMessageArgs, StructuredLogger, StructuredLoggerOptions } from "./structured-logger";
+import {
+  PrintMessageArgs,
+  StructuredLogger,
+  StructuredLoggerOptions,
+} from "./structured-logger";
 
 @Injectable()
 class MyLogger extends StructuredLogger {

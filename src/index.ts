@@ -203,7 +203,7 @@ export class StructuredLogger implements LoggerService {
       // level
       this.colorize(
         severity.toUpperCase(),
-        this.getColorNameByLogLevel(severity)
+        this.getColorNameByLogLevel(severity),
       ),
       // context
       context ? this.colorize(`[${context}]`, "yellow") : "",

@@ -15,7 +15,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "outDir": "./dist",
+    "outDir": "./dist"
   },
-  "include": ["./src/**/*"],
+  "include": ["./src/**/*"]
 }

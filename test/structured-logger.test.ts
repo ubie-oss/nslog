@@ -26,7 +26,7 @@ describe("json formatter", () => {
       { foo: "bar", x: { y: "z" } },
       "extra params",
       [1, 2, 3],
-      "ctx"
+      "ctx",
     );
 
     expect(getResult()).toEqual({
@@ -97,10 +97,10 @@ describe("text formatter", () => {
       { foo: "bar", x: { y: "z" } },
       "extra params",
       [1, 2, 3],
-      "ctx"
+      "ctx",
     );
     expect(getResult()).toEqual(
-      "INFO [ctx] hello foo=bar x.y=z extra params 1,2,3"
+      "INFO [ctx] hello foo=bar x.y=z extra params 1,2,3",
     );
   });
 
