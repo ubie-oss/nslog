@@ -19,5 +19,6 @@ jobs:
       - name: run test
         run: |
           npm ci
+          npm install @rollup/rollup-linux-x64-gnu
           npm run lint
           npm run test
