@@ -185,7 +185,11 @@ export class StructuredLogger implements LoggerService {
       }
     }
 
-    this.print(JSON.stringify(output));
+    this.print(this.formatJson(output));
+  }
+
+  protected formatJson(output: Record<string, unknown>): string {
+    return JSON.stringify(output);
   }
 
   protected printText({
