@@ -1,5 +1,5 @@
-import { StructuredLogger, LogLevel } from "../src/index";
 import { describe, beforeEach, test, expect, vi, MockInstance } from "vitest";
+import { StructuredLogger, LogLevel } from "../src/index";
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
 

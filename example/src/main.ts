@@ -1,6 +1,5 @@
-import { Logger } from "@nestjs/common";
+import { Logger, Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { Module } from "@nestjs/common";
 import { StructuredLogger } from "./structured-logger";
 
 @Module({})
