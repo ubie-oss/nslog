@@ -10,8 +10,7 @@
     "sourceMap": true,
     "skipLibCheck": true,
     "strict": true,
-    "outDir": "./dist/esm",
-    "types": ["vitest/globals"]
+    "outDir": "./dist/esm"
   },
   "include": ["src"]
 }
