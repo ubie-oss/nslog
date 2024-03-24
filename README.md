@@ -70,4 +70,4 @@ class MyLogger extends StructuredLogger {
 
 ## License
 
-This icon set is licensed under the [MIT License](https://github.com/ubie-oss/nslog/blob/main/LICENSE).
+[MIT License](https://github.com/ubie-oss/nslog/blob/main/LICENSE).
