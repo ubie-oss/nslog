@@ -68,6 +68,25 @@ class MyLogger extends StructuredLogger {
 }
 ```
 
+### Error logging
+
+Passing an Error object to `logger.error` is handled specially.
+
+```typescript
+const new Error("something went wrong");
+logger.error(err);
+```
+
+This will be output as follows.
+
+```json
+{
+  "severity": "ERROR",
+  "message": "something went wrong",
+  "stack_trace": "Error: something went wrong\n    at Object.<anonymous> (/path/to/app.js:1:13)\n    at Module._compile (node:internal/modules/cjs/loader:1376:14)\n    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)\n    at Module.load (node:internal/modules/cjs/loader:1207:32)\n    at Module._load (node:internal/modules/cjs/loader:1023:12)\n    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:135:12)\n    at node:internal/main/run_main_module:28:49"
+}
+```
+
 ## License
 
 [MIT License](https://github.com/ubie-oss/nslog/blob/main/LICENSE).

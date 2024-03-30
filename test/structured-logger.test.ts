@@ -75,6 +75,30 @@ describe("json formatter", () => {
       stack_trace: err.stack,
     });
   });
+
+  test("error with Error class", () => {
+    const err = new Error("something went wrong");
+    logger.error(err, { foo: "bar" });
+    expect(getResult()).toEqual({
+      severity: "ERROR",
+      message: err.message,
+      foo: "bar",
+      time: expect.stringMatching(isoDateRegex),
+      stack_trace: err.stack,
+    });
+  });
+
+  test("error with Error class and context", () => {
+    const err = new Error("something went wrong");
+    logger.error(err, "ctx");
+    expect(getResult()).toEqual({
+      severity: "ERROR",
+      message: err.message,
+      context: "ctx",
+      time: expect.stringMatching(isoDateRegex),
+      stack_trace: err.stack,
+    });
+  });
 });
 
 describe("text formatter", () => {
