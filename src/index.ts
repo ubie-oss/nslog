@@ -307,7 +307,30 @@ export class StructuredLogger implements LoggerService {
       }
     }
 
-    // error(message: unknown, stackOrContext?: string)
+    // error(message: string, error: Error, ...params)
+    if (args.length > 1 && typeof args[0] === "string" && args[1] instanceof Error) {
+      const message = args[0];
+      const err = args[1];
+      const params = args.slice(2);
+      const last = params[params.length - 1];
+      if (typeof last === "string") {
+        return {
+          message,
+          stack: err.stack,
+          context: last,
+          params: params.slice(0, -1).concat([{ error: err.toString() }])
+        }
+      } else {
+        return {
+          message,
+          stack: err.stack,
+          context: null,
+          params: params.concat([{ error: err.toString() }])
+        }
+      }
+    }
+
+    // error(message: unknown, stackOrContext?: string | error)
     if (args.length === 2) {
       const last = args[1];
       if (this.isStackFormat(last)) {
