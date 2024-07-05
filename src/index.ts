@@ -308,7 +308,11 @@ export class StructuredLogger implements LoggerService {
     }
 
     // error(message: string, error: Error, ...params)
-    if (args.length > 1 && typeof args[0] === "string" && args[1] instanceof Error) {
+    if (
+      args.length > 1 &&
+      typeof args[0] === "string" &&
+      args[1] instanceof Error
+    ) {
       const message = args[0];
       const err = args[1];
       const params = args.slice(2);
@@ -318,15 +322,15 @@ export class StructuredLogger implements LoggerService {
           message,
           stack: err.stack,
           context: last,
-          params: params.slice(0, -1).concat([{ error: err.toString() }])
-        }
+          params: params.slice(0, -1).concat([{ error: err.toString() }]),
+        };
       } else {
         return {
           message,
           stack: err.stack,
           context: null,
-          params: params.concat([{ error: err.toString() }])
-        }
+          params: params.concat([{ error: err.toString() }]),
+        };
       }
     }
 
