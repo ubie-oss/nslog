@@ -125,11 +125,11 @@ export class StructuredLogger implements LoggerService {
     if (!this.isLevelEnabled("fatal")) {
       return;
     }
-    const { message, params, context } = this.extractMessages([
+    const { message, params, context, stack } = this.extractMessagesWithStack([
       messages,
       ...optionalParams,
     ]);
-    this.printMessage({ message, params, context, severity: "fatal" });
+    this.printMessage({ message, params, stack, context, severity: "fatal" });
   }
 
   protected isLevelEnabled(level: LogLevel): boolean {
