@@ -99,17 +99,6 @@ export class StructuredLogger implements LoggerService {
     this.printMessage({ message, params, context, severity: "info" });
   }
 
-  error(messages: unknown, ...optionalParams: unknown[]) {
-    if (!this.isLevelEnabled("error")) {
-      return;
-    }
-    const { message, params, context, stack } = this.extractMessagesWithStack([
-      messages,
-      ...optionalParams,
-    ]);
-    this.printMessage({ message, params, stack, context, severity: "error" });
-  }
-
   warn(messages: unknown, ...optionalParams: unknown[]) {
     if (!this.isLevelEnabled("warn")) {
       return;
@@ -119,6 +108,17 @@ export class StructuredLogger implements LoggerService {
       ...optionalParams,
     ]);
     this.printMessage({ message, params, context, severity: "warn" });
+  }
+
+  error(messages: unknown, ...optionalParams: unknown[]) {
+    if (!this.isLevelEnabled("error")) {
+      return;
+    }
+    const { message, params, context, stack } = this.extractMessagesWithStack([
+      messages,
+      ...optionalParams,
+    ]);
+    this.printMessage({ message, params, stack, context, severity: "error" });
   }
 
   fatal(messages: unknown, ...optionalParams: unknown[]) {
