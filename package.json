@@ -1,6 +1,6 @@
 {
   "name": "@ubie/nslog",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A structured logger for NestJS",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
